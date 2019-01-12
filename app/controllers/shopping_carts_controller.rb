@@ -4,21 +4,33 @@ class ShoppingCartsController < ApplicationController
 
   before_action :validate_request_body, only: :update
 
+  def index
+    @carts = ShoppingCart.all
+
+    render_response(@carts, :ok, {include: {products: {except: [:created_at, :updated_at]}}})
+  end
+
+  def show
+    @cart = ShoppingCart.find(params[:id])
+
+    render_response(@cart, :ok, {include: {products: {except: [:created_at, :updated_at]}}})
+  end
+
   def create
     @cart = ShoppingCart.create!
 
-    render_response(@cart, :created)
+    render_response(@cart, :created, {include: {products: {except: [:created_at, :updated_at]}}})
   end
 
   def update
-    @cart = ShoppingCart.completed.find(params[:id])
+    @cart = ShoppingCart.uncompleted.find(params[:id])
 
     add_item if params[:item_to_be_added].present?
     return if performed?
 
     @cart.checkout if params[:checkout]
 
-    render_response(@cart)
+    render_response(@cart, :ok, {include: {products: {except: [:created_at, :updated_at]}}})
   end
 
   private

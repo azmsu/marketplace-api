@@ -37,17 +37,13 @@ Returns JSON response containing list of all products.
         "title": "Product1",
         "price": "1.45",
         "inventory_count": 1,
-        "created_at": "2019-01-12T06:41:24.076Z",
-        "updated_at": "2019-01-12T06:41:24.076Z",
-        "in_cart_count": 0,
+        "in_cart_count": 0
     },
     {
         "id": 2,
         "title": "Product2",
         "price": "2.76",
         "inventory_count": 0,
-        "created_at": "2019-01-12T06:41:24.079Z",
-        "updated_at": "2019-01-12T06:41:24.079Z",
         "in_cart_count": 0
     },
     {
@@ -55,8 +51,6 @@ Returns JSON response containing list of all products.
         "title": "Product3",
         "price": "0.22",
         "inventory_count": 2,
-        "created_at": "2019-01-12T06:41:24.081Z",
-        "updated_at": "2019-01-12T06:41:24.081Z",
         "in_cart_count": 0
     }
 ]
@@ -72,8 +66,6 @@ Returns JSON response containing list of all products with `inventory_count > 0`
         "title": "Product1",
         "price": "1.45",
         "inventory_count": 1,
-        "created_at": "2019-01-12T06:41:24.076Z",
-        "updated_at": "2019-01-12T06:41:24.076Z",
         "in_cart_count": 0
     },
     {
@@ -81,8 +73,6 @@ Returns JSON response containing list of all products with `inventory_count > 0`
         "title": "Product3",
         "price": "0.22",
         "inventory_count": 2,
-        "created_at": "2019-01-12T06:41:24.081Z",
-        "updated_at": "2019-01-12T06:41:24.081Z",
         "in_cart_count": 0
     }
 ]
@@ -98,8 +88,6 @@ Returns JSON response containing product with id, `:id`.
     "title": "Product1",
     "price": "1.45",
     "inventory_count": 1,
-    "created_at": "2019-01-12T06:41:24.076Z",
-    "updated_at": "2019-01-12T06:41:24.076Z",
     "in_cart_count": 0
 }
 ```
@@ -118,8 +106,6 @@ Purchases a single instance of product with id, `:id` and responds with the upda
     "id": 1,
     "title": "Product1",
     "price": "1.45",
-    "created_at": "2019-01-12T06:41:24.076Z",
-    "updated_at": "2019-01-12T06:49:16.658Z",
     "in_cart_count": 0
 }
 ```
@@ -139,8 +125,35 @@ Creates a shopping cart and sends it in the response.
     "id": 1,
     "completed": false,
     "total": "0.0",
-    "created_at": "2019-01-12T06:55:00.823Z",
-    "updated_at": "2019-01-12T06:55:00.823Z"
+    "products": []
+}
+```
+*Note: using shopping cart created above from here on.*
+
+### `GET` `/shopping_carts`
+Returns JSON response containing list of all shopping carts.
+```json5
+// Status 200 OK
+[
+    {
+        "id": 1,
+        "completed": false,
+        "total": "0.0",
+        "products": []
+    }
+]
+```
+
+### `GET` `/shopping_carts/:id`
+Returns JSON response containing shopping cart with id, `:id`.
+```json5
+// GET /shopping_carts/1
+// Status 200 OK
+{
+    "id": 1,
+    "completed": false,
+    "total": "0.0",
+    "products": []
 }
 ```
 
@@ -150,7 +163,7 @@ Adds `count` number of the product with id, `product_id` to the shopping cart.
 // Body
 {
     "item_to_be_added": {
-        "product_id": 1,
+        "product_id": 3,
         "count": 1
     }
 }
@@ -160,10 +173,17 @@ Adds `count` number of the product with id, `product_id` to the shopping cart.
 // Status 200 OK
 {
     "id": 1,
-    "total": "1.45",
+    "total": "0.22",
     "completed": false,
-    "created_at": "2019-01-12T07:57:21.325Z",
-    "updated_at": "2019-01-12T07:57:23.466Z"
+    "products": [
+        {
+            "id": 3,
+            "title": "Product3",
+            "price": "0.22",
+            "inventory_count": 2,
+            "in_cart_count": 1
+        }
+    ]
 }
 ```
 Checkout (complete) the cart and respond with the cart.
@@ -178,11 +198,17 @@ Checkout (complete) the cart and respond with the cart.
     "id": 1,
     "completed": true,
     "total": "0.0",
-    "created_at": "2019-01-12T07:57:21.325Z",
-    "updated_at": "2019-01-12T08:30:47.693Z"
+    "products": [
+        {
+            "id": 3,
+            "title": "Product3",
+            "price": "0.22",
+            "inventory_count": 1,
+            "in_cart_count": 0
+        }
+    ]
 }
 ```
-*Note: using shopping cart created in previous section.*
 
 ## Development Steps
 
@@ -243,3 +269,8 @@ bin/rails generate controller ShoppingCarts
 ```
 
 Add logic to controllers to handle shopping cart creation, adding items, and checking out.
+
+## Next Steps
+- Add unit tests using rspec.
+- Add more features, like removing items from shopping cart, adding users, ability to create products, etc.
+- Make API secure.

@@ -8,7 +8,7 @@ class ShoppingCartItem < ApplicationRecord
   def checkout
     self.product.in_cart_count -= self.count
     self.product.purchase(count)
-    self.purchased
+    self.purchased!
 
     self.save!
   end

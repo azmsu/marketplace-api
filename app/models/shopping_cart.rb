@@ -1,7 +1,8 @@
 class ShoppingCart < ApplicationRecord
   has_many :shopping_cart_items
+  has_many :products, through: :shopping_cart_items
 
-  scope :completed, -> { where("completed = ?", true) }
+  scope :uncompleted, -> { where("completed = ?", false) }
 
   # Add count number of product to the cart
   # @param product [Product]: the product to add to the cart
